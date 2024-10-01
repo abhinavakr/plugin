@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.9
+    command:
+      - "--providers.docker=true"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.file.watch=true"
+      - "--entryPoints.web.address=:80"
+      - "--experimental.localPlugins.maintenance.moduleName=github.com/programic/traefik-maintenance-plugin"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./traefik/traefik.yml:/etc/traefik/traefik.yml"
+      - "./traefik/dynamic:/etc/traefik/dynamic"
+
+  nginx:
+    build:
+      context: ./nginx
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx.rule=Host(`20.84.40.29`)"
+      - "traefik.http.routers.nginx.entrypoints=web"
+      - "traefik.http.middlewares.maintenance.plugin.maintenance.informUrl=http://inform/inform.json"
+    volumes:
+      - "./nginx:/usr/share/nginx/html"
+    networks:
+      - traefik-net
+
+  inform:
+    image: nginx:alpine
+    volumes:
+      - "./inform:/usr/share/nginx/html"
+    networks:
+      - traefik-net
+
+networks:
+  traefik-net:
+    external: true

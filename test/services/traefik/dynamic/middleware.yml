@@ -1,0 +1,10 @@
+# File: test/services/traefik/dynamic/middleware.yml
+
+http:
+  middlewares:
+    maintenance:
+      plugin:
+        maintenance:
+          informUrl: "http://inform/inform.json"
+          informInterval: 5
+          informTimeout: 3

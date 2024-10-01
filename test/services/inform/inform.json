@@ -1,0 +1,6 @@
+# File: test/services/inform/inform.json
+
+{
+  "status": "down",
+  "message": "We are currently undergoing maintenance. Please check back soon."
+}

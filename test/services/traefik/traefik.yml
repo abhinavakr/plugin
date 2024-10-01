@@ -1,0 +1,17 @@
+# File: test/services/traefik/traefik.yml
+
+experimental:
+  localPlugins:
+    maintenance:
+      moduleName: github.com/programic/traefik-maintenance-plugin
+
+entryPoints:
+  web:
+    address: ":80"
+
+providers:
+  docker:
+    exposedByDefault: false
+  file:
+    directory: /dynamic
+    watch: true
